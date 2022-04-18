@@ -1,3 +1,5 @@
+# flake8: noqa
+
 # PEP0440 compatible formatted version, see:
 # https://www.python.org/dev/peps/pep-0440/
 #
