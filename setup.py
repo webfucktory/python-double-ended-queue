@@ -29,7 +29,7 @@ setup(
     version=get_version(),
     author="webfucktory",
     author_email="root@webfucktory.com",
-    description="An asynchronous deque Python package based on the asyncio queue",
+    description="An asynchronous Deque Python package based on the asyncio Queue",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     url="https://github.com/webfucktory/python-double-ended-queue",
