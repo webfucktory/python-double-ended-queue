@@ -1,5 +1,5 @@
 import collections
-from asyncio import events, locks
+from asyncio import events
 from typing import Any
 
 
