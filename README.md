@@ -2,9 +2,9 @@
 [![PyPI version](https://badge.fury.io/py/double-ended-queue.svg)](https://pypi.org/project/double-ended-queue)
 [![Downloads count](https://img.shields.io/pypi/dm/double-ended-queue)](https://pypistats.org/packages/double-ended-queue)
 
-# Deque
+# Double ended Queue
 
-An asynchronous deque Python package based on the asyncio queue.
+An asynchronous Deque Python package based on the asyncio Queue.
 
 ## Getting started
 
