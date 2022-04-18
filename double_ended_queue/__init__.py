@@ -108,7 +108,7 @@ class Deque:
         else:
             return self.size() >= self.__maxsize
 
-    async def __wake_up_on_free_slot(self) -> None:
+    async def __wakeup_on_free_slot(self) -> None:
         while self.full():
             putter = self.__loop.create_future()
 
@@ -136,7 +136,7 @@ class Deque:
 
                 raise
 
-    async def __wake_up_on_available_item(self) -> Any:
+    async def __wakeup_on_available_item(self) -> Any:
         while self.empty():
             getter = self.__loop.create_future()
 
@@ -179,7 +179,7 @@ class Deque:
         If the Deque is full, wait until a free slot is available before adding item.
         """
 
-        await self.__wake_up_on_free_slot()
+        await self.__wakeup_on_free_slot()
 
         return self.put_nowait(item)
 
@@ -207,7 +207,7 @@ class Deque:
         If Deque is empty, wait until an item is available.
         """
 
-        await self.__wake_up_on_available_item()
+        await self.__wakeup_on_available_item()
 
         return self.get_nowait()
 
@@ -233,7 +233,7 @@ class Deque:
         If the Deque is full, wait until a free slot is available before adding item.
         """
 
-        await self.__wake_up_on_free_slot()
+        await self.__wakeup_on_free_slot()
 
         return self.put_left_nowait(item)
 
@@ -261,7 +261,7 @@ class Deque:
         If Deque is empty, wait until an item is available.
         """
 
-        await self.__wake_up_on_available_item()
+        await self.__wakeup_on_available_item()
 
         return self.get_right_nowait()
 
