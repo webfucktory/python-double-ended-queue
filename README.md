@@ -1,6 +1,6 @@
-[![Lint & Test](https://github.com/webfucktory/python-deque/actions/workflows/lint-test.yml/badge.svg)](https://github.com/webfucktory/python-deque/actions/workflows/lint-test.yml)
-[![PyPI version](https://badge.fury.io/py/deque.svg)](https://pypi.org/project/deque)
-[![Downloads count](https://img.shields.io/pypi/dm/deque)](https://pypistats.org/packages/deque)
+[![Lint & Test](https://github.com/webfucktory/python-double-ended-queue/actions/workflows/lint-test.yml/badge.svg)](https://github.com/webfucktory/python-double-ended-queue/actions/workflows/lint-test.yml)
+[![PyPI version](https://badge.fury.io/py/double-ended-queue.svg)](https://pypi.org/project/double-ended-queue)
+[![Downloads count](https://img.shields.io/pypi/dm/double-ended-queue)](https://pypistats.org/packages/double-ended-queue)
 
 # Deque
 
