@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 
 def get_version():
-    with open("deque/__init__.py") as f:
+    with open("double_ended_queue/__init__.py") as f:
         for line in f.read().splitlines():
             if line.startswith('__version__'):
                 return line.split('"' if '"' in line else "'")[1]
@@ -25,14 +25,14 @@ def get_long_description():
 
 
 setup(
-    name="deque",
+    name="double-ended-queue",
     version=get_version(),
     author="webfucktory",
     author_email="root@webfucktory.com",
-    description="An asynchronous deque package based on the asyncio queue with FIFO and LIFO support for Python",
+    description="An asynchronous deque Python package based on the asyncio queue",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url="https://github.com/webfucktory/python-deque",
+    url="https://github.com/webfucktory/python-double-ended-queue",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",

@@ -1,5 +1,15 @@
+# flake8: noqa
+
+# PEP0440 compatible formatted version, see:
+# https://www.python.org/dev/peps/pep-0440/
+#
+# Generic release markers:
+#   X.Y.0   # For first release after an increment in Y
+#   X.Y.Z   # For bugfix releases
+__version__ = '0.1.0'
+
 import collections
-from asyncio import events
+from asyncio import events, locks
 from typing import Any
 
 
@@ -26,6 +36,12 @@ class Deque:
 
         # Futures.
         self.__putters = collections.deque()
+
+        self.__unfinished_tasks = 0
+
+        self.__finished = locks.Event()
+
+        self.__finished.set()
 
         self.__deque = collections.deque()
 
@@ -57,6 +73,9 @@ class Deque:
 
         if self.__putters:
             result += f' _putters[{len(self.__putters)}]'
+
+        if self.__unfinished_tasks:
+            result += f' tasks={self.__unfinished_tasks}'
 
         return result
 
@@ -153,6 +172,60 @@ class Deque:
         if self.empty():
             raise DequeEmpty
 
+    async def put(self, item):
+        """
+        Put an item at the back of the Deque.
+
+        If the Deque is full, wait until a free slot is available before adding item.
+        """
+
+        await self.__wake_up_on_free_slot()
+
+        return self.put_nowait(item)
+
+    def put_nowait(self, item):
+        """
+        Put an item at the back of the Deque without blocking.
+
+        If no free slot is immediately available, raise DequeFull.
+        """
+
+        self.__check_full()
+
+        self.__deque.append(item)
+
+        self.__unfinished_tasks += 1
+
+        self.__finished.clear()
+
+        self.__wakeup_next(self.__getters)
+
+    async def get(self):
+        """
+        Remove and return an item from the front of the Deque.
+
+        If Deque is empty, wait until an item is available.
+        """
+
+        await self.__wake_up_on_available_item()
+
+        return self.get_nowait()
+
+    def get_nowait(self):
+        """
+        Remove and return an item from the front of the Deque.
+
+        Return an item if one is immediately available, else raise DequeEmpty.
+        """
+
+        self.__check_empty()
+
+        item = self.__deque.popleft()
+
+        self.__wakeup_next(self.__putters)
+
+        return item
+
     async def put_left(self, item):
         """
         Put an item at the front of the Deque.
@@ -175,57 +248,11 @@ class Deque:
 
         self.__deque.appendleft(item)
 
-        self.__wakeup_next(self.__getters)
+        self.__unfinished_tasks += 1
 
-    async def put_right(self, item):
-        """
-        Put an item at the back of the Deque.
-
-        If the Deque is full, wait until a free slot is available before adding item.
-        """
-
-        await self.__wake_up_on_free_slot()
-
-        return self.put_right_nowait(item)
-
-    def put_right_nowait(self, item):
-        """
-        Put an item at the back of the Deque without blocking.
-
-        If no free slot is immediately available, raise DequeFull.
-        """
-
-        self.__check_full()
-
-        self.__deque.append(item)
+        self.__finished.clear()
 
         self.__wakeup_next(self.__getters)
-
-    async def get_left(self):
-        """
-        Remove and return an item from the front of the Deque.
-
-        If Deque is empty, wait until an item is available.
-        """
-
-        await self.__wake_up_on_available_item()
-
-        return self.get_left_nowait()
-
-    def get_left_nowait(self):
-        """
-        Remove and return an item from the front of the Deque.
-
-        Return an item if one is immediately available, else raise DequeEmpty.
-        """
-
-        self.__check_empty()
-
-        item = self.__deque.popleft()
-
-        self.__wakeup_next(self.__putters)
-
-        return item
 
     async def get_right(self):
         """
@@ -239,7 +266,8 @@ class Deque:
         return self.get_right_nowait()
 
     def get_right_nowait(self):
-        """Remove and return an item from the back of the Deque.
+        """
+        Remove and return an item from the back of the Deque.
 
         Return an item if one is immediately available, else raise DequeEmpty.
         """
@@ -250,3 +278,37 @@ class Deque:
         self.__wakeup_next(self.__putters)
 
         return item
+
+    def task_done(self):
+        """
+        Indicate that a formerly enqueued task is complete.
+
+        Used by queue consumers. For each get() used to fetch a task, a subsequent call to task_done() tells the queue
+        that the processing on the task is complete.
+
+        If a join() is currently blocking, it will resume when all items have been processed (meaning that a task_done()
+        call was received for every item that had been put() into the queue).
+
+        Raises ValueError if called more times than there were items placed in the queue.
+        """
+
+        if self.__unfinished_tasks <= 0:
+            raise ValueError('task_done() called too many times')
+
+        self.__unfinished_tasks -= 1
+
+        if self.__unfinished_tasks == 0:
+            self.__finished.set()
+
+    async def join(self):
+        """
+        Block until all items in the queue have been gotten and processed.
+
+        The count of unfinished tasks goes up whenever an item is added to the Deque. The count goes down whenever a
+        consumer calls task_done() to indicate that the item was retrieved and all work on it is complete. When the
+        count of unfinished tasks drops to zero, join() unblocks.
+        """
+
+        if self.__unfinished_tasks > 0:
+            await self.__finished.wait()
+

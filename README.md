@@ -4,7 +4,7 @@
 
 # Deque
 
-An asynchronous deque package based on the asyncio queue with FIFO and LIFO support for Python.
+An asynchronous deque Python package based on the asyncio queue.
 
 ## Getting started
 
@@ -15,7 +15,7 @@ An asynchronous deque package based on the asyncio queue with FIFO and LIFO supp
 ### Installation
 
 ```bash
-pip install deque
+pip install double-ended-queue
 ```
 
 ## Usage
