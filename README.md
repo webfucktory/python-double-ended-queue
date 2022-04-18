@@ -2,7 +2,7 @@
 [![PyPI version](https://badge.fury.io/py/deque.svg)](https://pypi.org/project/deque)
 [![Downloads count](https://img.shields.io/pypi/dm/deque)](https://pypistats.org/packages/deque)
 
-# package-name
+# Deque
 
 An asynchronous deque package based on the asyncio queue with FIFO and LIFO support for Python.
 
