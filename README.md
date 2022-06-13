@@ -1,4 +1,4 @@
-[![Lint & Test](https://github.com/webfucktory/python-double-ended-queue/actions/workflows/lint-test.yml/badge.svg)](https://github.com/webfucktory/python-double-ended-queue/actions/workflows/lint-test.yml)
+[![Lint & Test](https://github.com/webfucktory/python-double-ended-queue/actions/workflows/lint-and-test.yml/badge.svg)](https://github.com/webfucktory/python-double-ended-queue/actions/workflows/lint-and-test.yml)
 [![PyPI version](https://badge.fury.io/py/double-ended-queue.svg)](https://pypi.org/project/double-ended-queue)
 [![Downloads count](https://img.shields.io/pypi/dm/double-ended-queue)](https://pypistats.org/packages/double-ended-queue)
 
@@ -21,6 +21,20 @@ pip install double-ended-queue
 ## Usage
 
 ### TO-DO
+
+## Development
+
+### Run Tests
+
+```shell script
+./test
+```
+
+### Style Check
+
+```shell script
+./lint
+```
 
 ## License
 
